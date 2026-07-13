@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "lint": "pnpm -r --parallel lint",
-    "typecheck": "pnpm -r --parallel typecheck",
+    "typecheck": "pnpm --filter @taskflow/types typecheck && pnpm --filter @taskflow/api typecheck && pnpm --filter @taskflow/web typecheck",
     "build": "pnpm --filter @taskflow/types build && pnpm -r --filter !@taskflow/types build",
     "dev": "docker compose up"
   },
