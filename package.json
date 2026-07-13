@@ -1,0 +1,17 @@
+{
+  "name": "cyphlab-taskflow",
+  "private": true,
+  "scripts": {
+    "lint": "pnpm -r --parallel lint",
+    "typecheck": "pnpm --filter @taskflow/types typecheck && pnpm --filter @taskflow/api typecheck && pnpm --filter @taskflow/web typecheck",
+    "build": "pnpm --filter @taskflow/types build && pnpm -r --filter !@taskflow/types build",
+    "dev": "docker compose up"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.6.0"
+  }
+}
