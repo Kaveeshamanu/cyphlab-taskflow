@@ -1,8 +1,34 @@
+# OS
 .DS_Store
+Thumbs.db
+
+# Dependencies
 node_modules/
+
+# Environment
 .env
 .env.local
+.env.*.local
+
+# Build output
 dist/
 build/
 .next/
+
+# Test / coverage
 coverage/
+*.lcov
+
+# Uploads (local dev storage — never commit)
+apps/api/uploads/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# pnpm debug
+pnpm-debug.log*
+
+# Prisma client (generated)
+apps/api/src/generated/

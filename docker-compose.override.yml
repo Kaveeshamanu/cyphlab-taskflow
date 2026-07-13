@@ -1,0 +1,29 @@
+# Development overrides — hot-reload via source bind-mounts.
+# Applied automatically when running `docker compose up` locally.
+# NOT included in production deployments (Render / CI).
+services:
+  api:
+    build:
+      target: deps
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/packages/types/node_modules
+      - uploads:/app/apps/api/uploads
+    environment:
+      NODE_ENV: development
+    command: sh /app/apps/api/docker-entrypoint.sh
+
+  web:
+    build:
+      target: deps
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/types/node_modules
+      - /app/apps/web/.next
+    environment:
+      NODE_ENV: development
+    command: sh -c "cd apps/web && node_modules/.bin/next dev --port 3000"
