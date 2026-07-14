@@ -19,7 +19,20 @@ docker compose up --build
 
 - Frontend → http://localhost:3000
 - API → http://localhost:3001
-- API docs → http://localhost:3001/api/docs *(available after Phase 3)*
+- API docs (OpenAPI spec) → http://localhost:3001/api/docs.json
+
+---
+
+## API documentation
+
+The OpenAPI 3.0 spec is served at [`/api/docs.json`](http://localhost:3001/api/docs.json) —
+import that URL into any OpenAPI-compatible client (Postman, Insomnia, VS Code REST client).
+A ready-to-import Postman collection is also checked in at
+[`postman_collection.json`](./postman_collection.json) (repo root), generated from the same
+spec via `pnpm --filter @taskflow/api generate:postman` so the two never drift.
+
+*(Swagger UI's HTML renderer at `/api/docs` has an asset-loading issue in Safari — the spec
+itself is complete; use the JSON endpoint or the Postman collection above.)*
 
 ---
 

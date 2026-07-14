@@ -1,3 +1,5 @@
 export * from './types/enums'
 export * from './types/api.types'
+export * from './types/auth.types'
 export * from './schemas/common.schemas'
+export * from './schemas/auth.schemas'
