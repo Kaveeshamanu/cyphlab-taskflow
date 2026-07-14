@@ -84,14 +84,14 @@ export const prisma = basePrisma.$extends({
       async findFirst({ model, args, query }) {
         if (SOFT_DELETE_MODELS.has(model)) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(args as any).where = { ...(args as any).where, deletedAt: null }
+          (args as any).where = { ...(args as any).where, deletedAt: null }
         }
         return query(args)
       },
       async findMany({ model, args, query }) {
         if (SOFT_DELETE_MODELS.has(model)) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(args as any).where = { ...(args as any).where, deletedAt: null }
+          (args as any).where = { ...(args as any).where, deletedAt: null }
         }
         return query(args)
       },
