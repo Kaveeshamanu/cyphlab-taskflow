@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { getActorId } from '../utils/actorContext'
 
 const globalForPrisma = globalThis as unknown as { basePrisma: PrismaClient }
@@ -36,13 +36,25 @@ const AUDITED_MODELS = SOFT_DELETE_MODELS
 // Never let a DB dump-adjacent audit trail double as a credential leak.
 const REDACTED_FIELDS = new Set(['passwordHash', 'emailVerifyToken', 'passwordResetToken'])
 
-function redact(record: unknown): unknown {
-  if (!record || typeof record !== 'object') return record
+// redact() only ever produces a *nested* property value inside the { before,
+// after } metadata object below — never the top-level Json field value —
+// so "no record" is plain JS null here, which Prisma's InputJsonObject
+// property type (InputJsonValue | null) accepts directly. The special
+// Prisma.JsonNull sentinel is only for the top-level field (see
+// logActivity in utils/activityLog.ts, which does use it there).
+function redact(record: unknown): Prisma.InputJsonValue | null {
+  if (record === null || record === undefined) return null
+  if (typeof record !== 'object') return record as Prisma.InputJsonValue
+
   const clone: Record<string, unknown> = { ...(record as Record<string, unknown>) }
   for (const field of REDACTED_FIELDS) {
     if (field in clone) clone[field] = '[redacted]'
   }
-  return clone
+  // Round-trip through JSON: the raw Prisma record has Date fields
+  // (createdAt/updatedAt/deletedAt, ...), which aren't valid JSON values —
+  // this turns them into ISO strings, matching what InputJsonValue actually
+  // requires instead of merely satisfying the type with a cast.
+  return JSON.parse(JSON.stringify(clone)) as Prisma.InputJsonValue
 }
 
 function delegateFor(model: string) {
@@ -55,7 +67,7 @@ async function writeAuditLog(
   entityType: string,
   entityId: string,
   action: 'CREATED' | 'UPDATED' | 'DELETED' | 'RESTORED',
-  metadata: Record<string, unknown>,
+  metadata: Prisma.InputJsonValue,
 ): Promise<void> {
   const actorId = getActorId()
   if (!actorId) return // no request context (e.g. seed script) — nothing to attribute to
