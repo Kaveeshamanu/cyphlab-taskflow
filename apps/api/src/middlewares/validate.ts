@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
-import { AnyZodObject, ZodError } from 'zod'
+import { ZodError, ZodTypeAny } from 'zod'
 import { fail } from '../utils/envelope'
 
 interface ValidationSchemas {
-  body?: AnyZodObject
-  query?: AnyZodObject
-  params?: AnyZodObject
+  // ZodTypeAny (not AnyZodObject) — moveTaskSchema wraps its ZodObject in
+  // .refine(), which returns a ZodEffects, not a ZodObject.
+  body?: ZodTypeAny
+  query?: ZodTypeAny
+  params?: ZodTypeAny
 }
 
 export function validate(schemas: ValidationSchemas) {

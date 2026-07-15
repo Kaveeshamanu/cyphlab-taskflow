@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ZodError } from 'zod'
+import multer from 'multer'
 import { AppError, fail } from '../utils/envelope'
 
 export function notFoundHandler(req: Request, res: Response): void {
@@ -15,6 +16,10 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
   if (err instanceof ZodError) {
     const errors = err.errors.map((e) => ({ field: e.path.join('.'), message: e.message }))
     fail(res, 'Validation failed', 422, errors)
+    return
+  }
+  if (err instanceof multer.MulterError) {
+    fail(res, `Upload failed: ${err.message}`, 422)
     return
   }
   console.error(`[${req.id}]`, err)

@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { ApiResponse, FieldError } from '@taskflow/types'
+import { ApiResponse, FieldError, PaginatedResponse, PaginationMeta } from '@taskflow/types'
 
 export function ok<T>(res: Response, data: T, message = 'OK', statusCode = 200): Response {
   const body: ApiResponse<T> = { success: true, data, message, errors: null }
@@ -8,6 +8,16 @@ export function ok<T>(res: Response, data: T, message = 'OK', statusCode = 200):
 
 export function created<T>(res: Response, data: T, message = 'Created'): Response {
   return ok(res, data, message, 201)
+}
+
+export function paginated<T>(
+  res: Response,
+  data: T[],
+  meta: PaginationMeta,
+  message = 'OK',
+): Response {
+  const body: PaginatedResponse<T> = { success: true, data, message, errors: null, meta }
+  return res.status(200).json(body)
 }
 
 export function fail(

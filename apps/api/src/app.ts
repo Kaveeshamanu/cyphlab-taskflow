@@ -1,3 +1,4 @@
+import path from 'node:path'
 import express, { Application } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -7,6 +8,16 @@ import { ok } from './utils/envelope'
 import { requestId } from './middlewares/requestId'
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler'
 import { createAuthRouter } from './modules/auth/auth.router'
+import { createUsersRouter } from './modules/users/users.router'
+import { createProjectsRouter } from './modules/projects/projects.router'
+import { createTasksRouter } from './modules/tasks/tasks.router'
+import { createCommentsRouter } from './modules/comments/comments.router'
+import { createTaskAttachmentsRouter, createAttachmentsRouter } from './modules/attachments/attachments.router'
+import { createNotificationsRouter } from './modules/notifications/notifications.router'
+import { createActivityRouter } from './modules/activity/activity.router'
+import { createSearchRouter } from './modules/search/search.router'
+import { createDashboardRouter } from './modules/dashboard/dashboard.router'
+import { createExportRouter } from './modules/export/export.router'
 import { mountSwagger } from './openapi/swagger'
 
 export function createApp(): Application {
@@ -29,9 +40,27 @@ export function createApp(): Application {
     ok(res, { status: 'ok', timestamp: new Date().toISOString() })
   })
 
+  // Local-driver attachments are served straight off disk; a no-op mount
+  // when STORAGE_DRIVER=cloudinary since nothing is ever written here.
+  app.use('/uploads', express.static(path.resolve(env.UPLOAD_DIR)))
+
   mountSwagger(app)
 
   app.use('/api/v1/auth', createAuthRouter())
+  app.use('/api/v1/users', createUsersRouter())
+  app.use('/api/v1/projects', createProjectsRouter())
+  // Nested task routers mounted before the general /tasks router — see
+  // tasks.router.ts's own routes for why this ordering is defensive rather
+  // than strictly required (Express falls through non-matching mounts).
+  app.use('/api/v1/tasks/:taskId/comments', createCommentsRouter())
+  app.use('/api/v1/tasks/:taskId/attachments', createTaskAttachmentsRouter())
+  app.use('/api/v1/tasks', createTasksRouter())
+  app.use('/api/v1/attachments', createAttachmentsRouter())
+  app.use('/api/v1/notifications', createNotificationsRouter())
+  app.use('/api/v1/activity', createActivityRouter())
+  app.use('/api/v1/search', createSearchRouter())
+  app.use('/api/v1/dashboard', createDashboardRouter())
+  app.use('/api/v1/export', createExportRouter())
 
   app.use(notFoundHandler)
   app.use(errorHandler)

@@ -2,6 +2,7 @@ import nodemailer, { Transporter } from 'nodemailer'
 import { env } from '../../config/env'
 import { verifyEmailTemplate } from './templates/verifyEmail.template'
 import { passwordResetTemplate } from './templates/passwordReset.template'
+import { taskAssignedTemplate } from './templates/taskAssigned.template'
 
 let transporterPromise: Promise<Transporter> | null = null
 
@@ -49,5 +50,15 @@ export async function sendVerifyEmail(to: string, name: string, verifyUrl: strin
 
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string): Promise<void> {
   const { subject, html, text } = passwordResetTemplate(name, resetUrl)
+  await sendMail(to, subject, html, text)
+}
+
+export async function sendTaskAssignedEmail(
+  to: string,
+  name: string,
+  taskTitle: string,
+  taskUrl: string,
+): Promise<void> {
+  const { subject, html, text } = taskAssignedTemplate(name, taskTitle, taskUrl)
   await sendMail(to, subject, html, text)
 }

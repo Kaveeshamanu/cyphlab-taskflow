@@ -7,7 +7,7 @@ import { AppError } from '../../utils/envelope'
 import { signAccessToken, signRefreshToken, verifyRefreshTokenSignature } from '../../utils/jwt'
 import { generateOpaqueToken, sha256 } from '../../utils/tokens'
 import { sendVerifyEmail, sendPasswordResetEmail } from '../../services/email/email.service'
-import { env } from '../../config/env'
+import { clientOrigin } from '../../utils/clientOrigin'
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000
 const GENERIC_LOGIN_ERROR = 'Invalid email or password'
@@ -46,10 +46,6 @@ function toAuthUser(user: {
     avatarUrl: user.avatarUrl,
     isEmailVerified: user.isEmailVerified,
   }
-}
-
-function clientOrigin(): string {
-  return env.CLIENT_URL.split(',')[0].trim()
 }
 
 async function issueSession(client: RefreshTokenWriter, userId: string, role: PrismaRole) {
