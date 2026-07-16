@@ -6,6 +6,8 @@
 
 > **Live demo note:** The API is hosted on Render's free tier, which sleeps after ~15 min of inactivity. The first request after idle will take ~50 s to respond — this is expected and not a broken link.
 
+> **Deploying this yourself?** See [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) for the full Neon → Render → Vercel runbook, exact env vars, and the cross-site cookie/CORS config.
+
 ---
 
 ## Quick start (Docker — zero manual steps)
