@@ -23,6 +23,7 @@ interface ProjectRecord {
   updatedAt: Date
   manager?: { id: string; name: string; email: string }
   _count?: { members: number; tasks: number }
+  members?: { user: { id: string; name: string; email: string; avatarUrl: string | null } }[]
 }
 
 export function toProjectDto(project: ProjectRecord): ProjectDto {
@@ -36,6 +37,7 @@ export function toProjectDto(project: ProjectRecord): ProjectDto {
     managerId: project.managerId,
     ...(project.manager ? { manager: project.manager } : {}),
     ...(project._count ? { memberCount: project._count.members, taskCount: project._count.tasks } : {}),
+    ...(project.members ? { members: project.members.map((m) => m.user) } : {}),
     createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
   }
@@ -85,6 +87,7 @@ export async function getById(id: string): Promise<ProjectDto> {
     include: {
       manager: { select: { id: true, name: true, email: true } },
       _count: { select: { members: true, tasks: true } },
+      members: { include: { user: { select: { id: true, name: true, email: true, avatarUrl: true } } } },
     },
   })
   if (!project) throw new AppError('Project not found', 404)
