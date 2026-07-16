@@ -50,9 +50,10 @@ export async function search(user: AuthedUser, query: SearchQuery): Promise<Sear
     results.tasks = tasks.map(tasksService.toTaskDto)
   }
 
-  // User search is admin-only — the same "CRUD any user" boundary that
-  // gates the /users module applies here too.
-  if (user.role === Role.ADMIN && (!query.type || query.type === 'user')) {
+  // User search is admin + PM — a PM needs to find people to add as project
+  // members, even though full user CRUD (the /users module) stays admin-only.
+  // Team members get no user results: they can't manage membership anyway.
+  if ((user.role === Role.ADMIN || user.role === Role.PROJECT_MANAGER) && (!query.type || query.type === 'user')) {
     const users = await prisma.user.findMany({
       where: { OR: [{ name: { contains: query.q, mode: 'insensitive' } }, { email: { contains: query.q, mode: 'insensitive' } }] },
       take,

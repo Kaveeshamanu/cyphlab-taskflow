@@ -19,6 +19,7 @@ export interface ProjectDto {
   manager?: Pick<UserDto, 'id' | 'name' | 'email'>
   memberCount?: number
   taskCount?: number
+  members?: Pick<UserDto, 'id' | 'name' | 'email' | 'avatarUrl'>[]
   createdAt: string
   updatedAt: string
 }

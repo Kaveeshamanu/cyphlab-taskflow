@@ -2,6 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────────────────────────────
+   Design tokens — colors (HSL triplets, consumed via hsl(var(--x))),
+   radii, and a type scale. Every component below reads from these; there
+   are no hardcoded hex values in component code. Chosen for WCAG AA text
+   contrast against their paired background in both themes.
+   ──────────────────────────────────────────────────────────────────────── */
 :root {
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.625rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+
+  /* Spacing (semantic aliases over the default Tailwind scale) */
+  --space-page-x: 1.25rem;
+  --space-page-y: 1.5rem;
+  --space-section: 2rem;
+
+  --radius: 0.625rem;
+
+  /* Light theme */
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 243 75% 55%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 40%;
+  --accent: 226 100% 96%;
+  --accent-foreground: 243 75% 40%;
+  --destructive: 0 73% 41%;
+  --destructive-foreground: 210 40% 98%;
+  --success: 161 94% 24%;
+  --success-foreground: 210 40% 98%;
+  --warning: 32 95% 34%;
+  --warning-foreground: 210 40% 98%;
+  --border: 214 32% 89%;
+  --input: 214 32% 89%;
+  --ring: 243 75% 55%;
+}
+
+.dark {
+  --background: 224 42% 7%;
+  --foreground: 210 40% 96%;
+  --card: 222 35% 10%;
+  --card-foreground: 210 40% 96%;
+  --popover: 222 35% 10%;
+  --popover-foreground: 210 40% 96%;
+  --primary: 234 89% 76%;
+  --primary-foreground: 224 42% 10%;
+  --secondary: 217 28% 17%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 28% 17%;
+  --muted-foreground: 215 20% 68%;
+  --accent: 217 33% 20%;
+  --accent-foreground: 234 89% 86%;
+  --destructive: 0 91% 71%;
+  --destructive-foreground: 224 42% 10%;
+  --success: 156 72% 67%;
+  --success-foreground: 224 42% 10%;
+  --warning: 38 92% 60%;
+  --warning-foreground: 224 42% 10%;
+  --border: 217 28% 19%;
+  --input: 217 28% 19%;
+  --ring: 234 89% 76%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
 }
